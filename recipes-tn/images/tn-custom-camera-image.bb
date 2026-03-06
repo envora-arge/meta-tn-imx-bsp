@@ -9,6 +9,8 @@ IMAGE_INSTALL += " \
     dropbear \
     nano \
     htop \
+    git \
+    iperf3 \
 "
 
 # VPU (Hantro) and Multimedia (GStreamer, V4L2)
@@ -37,7 +39,12 @@ IMAGE_INSTALL += " \
     kernel-modules \
 "
 
+
 # Debian Package Manager Support
+# NOTE: This only makes Yocto produce packages in .deb format.
+# Running 'apt update' at runtime will show an empty list because Yocto
+# does not connect to any external internet repo. Only packages added via
+# IMAGE_INSTALL at build time are included in the image.
 PACKAGE_CLASSES = "package_deb"
 IMAGE_FEATURES += "package-management"
 

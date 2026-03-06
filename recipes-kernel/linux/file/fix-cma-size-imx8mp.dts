@@ -1,6 +1,0 @@
-/dts-v1/;
-/plugin/;
-
-&{/reserved-memory/linux,cma} {
-    size = <0 0x3c000000>;
-};
