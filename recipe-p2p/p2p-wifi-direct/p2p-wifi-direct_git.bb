@@ -12,15 +12,15 @@ inherit systemd
 RDEPENDS:${PN} = "wpa-supplicant iw iproute2 bash"
 
 do_install() {
-    # Scriptleri yükle
+    # Install Scripts
     install -d ${D}${bindir}
     install -m 0755 ${S}/scripts/*.sh ${D}${bindir}/
 
-    # Systemd servislerini yükle
+    # Install systemd services
     install -d ${D}${systemd_system_unitdir}
     install -m 0644 ${S}/systemd/*.service ${D}${systemd_system_unitdir}/
 
-    # Konfigürasyonları yükle
+    # Install configurations
     install -d ${D}${sysconfdir}/wpa_supplicant
     install -m 0644 ${S}/config/*.conf ${D}${sysconfdir}/wpa_supplicant/
 }
