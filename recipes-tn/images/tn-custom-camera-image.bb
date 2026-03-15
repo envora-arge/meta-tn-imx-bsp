@@ -16,6 +16,8 @@ IMAGE_INSTALL += " \
 # VPU (Hantro) and Multimedia (GStreamer, V4L2)
 IMAGE_INSTALL += " \
     imx-vpu-hantro \
+    imx-gpu-g2d \
+    imx-gst1.0-plugin \
     v4l-utils \
     gstreamer1.0 \
     gstreamer1.0-plugins-base \
