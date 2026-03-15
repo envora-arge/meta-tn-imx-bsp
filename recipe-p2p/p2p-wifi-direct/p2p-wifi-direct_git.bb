@@ -25,4 +25,6 @@ do_install() {
     install -m 0644 ${S}/config/*.conf ${D}${sysconfdir}/wpa_supplicant/
 }
 
+SYSTEMD_AUTO_ENABLE = "disable"
+
 SYSTEMD_SERVICE:${PN} = "p2p-init.service p2p-watchdog.service p2p-power.service"
