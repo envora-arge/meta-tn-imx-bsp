@@ -11,12 +11,19 @@ S = "${WORKDIR}/git"
 inherit cmake pkgconfig systemd
 
 DEPENDS = "gstreamer1.0 gstreamer1.0-plugins-base gstreamer1.0-rtsp-server glib-2.0 pkgconfig-native"
+EXTRA_OECMAKE:append = " -DCMAKE_INSTALL_PREFIX:PATH=${prefix}"
 
 SYSTEMD_AUTO_ENABLE = "disable"
 
 SYSTEMD_SERVICE:${PN} = "p2p-stream.service"
 
 do_install:append() {
+    # Some upstream CMake installs to /usr/local; move binary into ${bindir} for Yocto packaging.
+    if [ -f ${D}/usr/local/bin/p2p-stream ]; then
+        install -d ${D}${bindir}
+        mv ${D}/usr/local/bin/p2p-stream ${D}${bindir}/p2p-stream
+    fi
+
     install -d ${D}${sysconfdir}/default
     install -m 0644 ${S}/config/video-node.env ${D}${sysconfdir}/default/video-node
 }
