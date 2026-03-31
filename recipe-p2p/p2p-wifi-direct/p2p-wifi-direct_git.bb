@@ -2,7 +2,7 @@ SUMMARY = "P2P Wi-Fi Direct Scripts and Services"
 LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda2f7b4f302"
 
-SRC_URI = "git://github.com/yasintuncerr/p2p-wifi-direct.git;protocol=https;branch=main"
+SRC_URI = "git://github.com/yasintuncerr-embedded-labs/p2p-wifi-direct.git;protocol=https;branch=main"
 SRCREV = "${AUTOREV}"
 
 S = "${WORKDIR}/git"
