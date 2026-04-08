@@ -11,7 +11,6 @@ IMAGE_FEATURES += "tools-sdk dev-pkgs"
 IMAGE_INSTALL += " \
     cmake \
     make \
-    pkgconf \
     gdb \
 "
 
