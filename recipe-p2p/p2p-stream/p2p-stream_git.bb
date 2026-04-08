@@ -34,7 +34,7 @@ do_install:append() {
 
     
     install -d ${D}${sysconfdir}/udev/rules.d
-    install -m 0644 ${WORKDIR}/99-camera.rules ${D}${sysconfdir}/udev/rules.d/
+    install -m 0644 ${UNPACKDIR}/99-camera.rules ${D}${sysconfdir}/udev/rules.d/
 
     install -d ${D}${sysconfdir}/p2p-stream/device-profiles
     install -m 0644 ${S}/device-profiles/*.ini ${D}${sysconfdir}/p2p-stream/device-profiles/
