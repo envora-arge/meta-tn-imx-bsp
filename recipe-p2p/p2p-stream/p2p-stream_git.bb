@@ -2,7 +2,8 @@ SUMMARY = "P2P Wi-Fi Direct Stream Application"
 LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda2f7b4f302"
 
-SRC_URI = "git://github.com/yasintuncerr-embedded-labs/p2p-stream.git;protocol=https;branch=main"
+SRC_URI = "git://github.com/yasintuncerr-embedded-labs/p2p-stream.git;protocol=https;branch=main \
+           file://99-camera.rules"
 SRCREV = "${AUTOREV}"
 
 S = "${WORKDIR}/git"
@@ -30,6 +31,14 @@ do_install:append() {
 
     install -d ${D}${sysconfdir}/default
     install -m 0644 ${S}/config/video-node.env ${D}${sysconfdir}/default/video-node
+
+    
+    install -d ${D}${sysconfdir}/udev/rules.d
+    install -m 0644 ${WORKDIR}/99-camera.rules ${D}${sysconfdir}/udev/rules.d/
+
+    install -d ${D}${sysconfdir}/p2p-stream/device-profiles
+    install -m 0644 ${S}/device-profiles/*.ini ${D}${sysconfdir}/p2p-stream/device-profiles/
 }
 
-FILES:${PN} += "${sysconfdir}/p2p-stream/device-profiles/*"
+FILES:${PN} += "${sysconfdir}/p2p-stream/device-profiles/* \
+                ${sysconfdir}/udev/rules.d/99-camera.rules"
