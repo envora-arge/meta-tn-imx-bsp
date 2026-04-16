@@ -1,2 +1,2 @@
 # udev rule for the NXP mxc_isi driver. Creates a persistent symlink at /dev/video-camera.
-SUBSYSTEM=="video4linux", ATTRS{name}=="mxc_isi*", SYMLINK+="video-camera"
+SUBSYSTEM=="video4linux", ATTR{name}=="mxc_isi.0.capture", SYMLINK+="video-camera"
