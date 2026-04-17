@@ -2,7 +2,7 @@ SUMMARY = "P2P Wi-Fi Direct Scripts and Services"
 LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda2f7b4f302"
 
-SRC_URI = "git://github.com/envora-arge/p2p-wifi-direct.git;protocol=ssh;branch=main"
+SRC_URI = "git://git@github.com/envora-arge/p2p-wifi-direct.git;protocol=ssh;branch=main"
 SRCREV = "${AUTOREV}"
 
 S = "${WORKDIR}/git"
