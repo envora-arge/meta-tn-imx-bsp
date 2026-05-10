@@ -21,3 +21,7 @@ else
 	echo -e "/dev/${BOOT_DEV}\t0xc0000\t0x2000" > /etc/fw_env.config
 	echo -e "/dev/${BOOT_DEV}\t0xc2000\t0x2000" >> /etc/fw_env.config
 fi
+
+# Create empty default env file so fw_setenv can initialize an unwritten
+# U-Boot env area without failing on "Cannot read default environment from file"
+touch /etc/u-boot-initial-env
