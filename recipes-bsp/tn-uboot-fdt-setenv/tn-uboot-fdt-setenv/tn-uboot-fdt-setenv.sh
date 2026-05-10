@@ -28,6 +28,24 @@ if [ "${current}" = "${FDT_FILE}" ]; then
     exit 0
 fi
 
+# If U-Boot env area is uninitialized (never written), fw_setenv fails with
+# "Cannot read environment". Zero out both redundant copies so libubootenv
+# can write a fresh env with a valid CRC.
+if ! fw_printenv fdtfile > /dev/null 2>&1; then
+    echo "tn-uboot-fdt-setenv: U-Boot env uninitialized, clearing env area"
+    env_dev=$(awk 'NR==1{print $1}' /etc/fw_env.config)
+    env_size=$(awk 'NR==1{print $3}' /etc/fw_env.config)
+    env_size_dec=$(printf '%d' "${env_size}")
+    bs=512
+    count=$(( (env_size_dec + bs - 1) / bs ))
+    awk '{print $2}' /etc/fw_env.config | while read -r off; do
+        seek_dec=$(printf '%d' "${off}")
+        seek_blocks=$(( seek_dec / bs ))
+        dd if=/dev/zero of="${env_dev}" bs=${bs} seek=${seek_blocks} count=${count} 2>/dev/null
+    done
+    sync
+fi
+
 echo "tn-uboot-fdt-setenv: setting fdtfile=${FDT_FILE}"
 if ! fw_setenv fdtfile "${FDT_FILE}"; then
     echo "tn-uboot-fdt-setenv: fw_setenv failed, cannot update fdtfile"
