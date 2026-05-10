@@ -1,5 +1,5 @@
 #!/bin/sh
-# Set U-Boot fdt_file environment variable on first boot.
+# Set U-Boot fdtfile environment variable on first boot.
 # fw_env.config must already exist (created by tn-u-boot-fw-env.service).
 
 FDT_FILE="@UBOOT_FDT_FILE@"
@@ -17,19 +17,22 @@ while [ ! -f /etc/fw_env.config ] && [ "${retries}" -gt 0 ]; do
 done
 
 if [ ! -f /etc/fw_env.config ]; then
-    echo "tn-uboot-fdt-setenv: /etc/fw_env.config not found, cannot set fdt_file"
+    echo "tn-uboot-fdt-setenv: /etc/fw_env.config not found, cannot set fdtfile"
     exit 1
 fi
 
-current=$(fw_printenv fdt_file 2>/dev/null | cut -d= -f2)
+current=$(fw_printenv fdtfile 2>/dev/null | cut -d= -f2)
 if [ "${current}" = "${FDT_FILE}" ]; then
-    echo "tn-uboot-fdt-setenv: fdt_file already set to ${FDT_FILE}, nothing to do"
+    echo "tn-uboot-fdt-setenv: fdtfile already set to ${FDT_FILE}, nothing to do"
     systemctl disable tn-uboot-fdt-setenv.service
     exit 0
 fi
 
-echo "tn-uboot-fdt-setenv: setting fdt_file=${FDT_FILE}"
-fw_setenv fdt_file "${FDT_FILE}"
+echo "tn-uboot-fdt-setenv: setting fdtfile=${FDT_FILE}"
+if ! fw_setenv fdtfile "${FDT_FILE}"; then
+    echo "tn-uboot-fdt-setenv: fw_setenv failed, cannot update fdtfile"
+    exit 1
+fi
 
 systemctl disable tn-uboot-fdt-setenv.service
 echo "tn-uboot-fdt-setenv: rebooting to apply new DTB..."
