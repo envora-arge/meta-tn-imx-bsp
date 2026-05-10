@@ -1,0 +1,12 @@
+[Unit]
+Description=Set U-Boot fdt_file environment variable for correct DTB (first boot only)
+After=tn-u-boot-fw-env.service
+Wants=tn-u-boot-fw-env.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=no
+ExecStart=/bin/sh /usr/sbin/tn-uboot-fdt-setenv.sh
+
+[Install]
+WantedBy=multi-user.target
