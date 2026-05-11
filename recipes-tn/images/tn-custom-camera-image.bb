@@ -41,10 +41,6 @@ IMAGE_INSTALL += " \
     kernel-modules \
 "
 
-# Sets U-Boot fdt_file=imx8mp-evk-tevs.dtb persistently on first boot.
-# Removes the need to manually run fw_setenv at the U-Boot prompt after flashing.
-IMAGE_INSTALL += "tn-u-boot-fw-env tn-uboot-fdt-setenv"
-
 
 # Debian Package Manager Support
 # NOTE: This only makes Yocto produce packages in .deb format.

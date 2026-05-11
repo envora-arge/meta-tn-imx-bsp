@@ -13,3 +13,17 @@ DELTA_KERNEL_DEFCONFIG:rescue = "rescue-fragment.cfg"
 do_copy_defconfig:append:rescue () {
     cp ${UNPACKDIR}/logo.ppm ${S}/drivers/video/logo/logo_linux_clut224.ppm
 }
+
+# Disable the second TEVS camera (CSI1, i2c@30a40000) in the deployed DTB.
+# Without this, slow I2C ENXIO errors from the unpopulated CSI1 camera cause
+# mxc_isi.0 to unregister (video3 disappears) before userspace can open it.
+DEPENDS:append:tn-camera = " dtc-native"
+
+do_deploy:append:tn-camera () {
+    dtb="${DEPLOYDIR}/imx8mp-evk-tevs.dtb"
+    if [ -f "${dtb}" ]; then
+        fdtput -t s "${dtb}" \
+            "/soc@0/bus@30800000/i2c@30a40000/tevs@48" \
+            status disabled
+    fi
+}

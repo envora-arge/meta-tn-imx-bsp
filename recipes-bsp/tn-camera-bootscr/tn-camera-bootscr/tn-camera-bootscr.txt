@@ -1,0 +1,2 @@
+setenv fdtfile imx8mp-evk-tevs.dtb
+run bsp_bootcmd
