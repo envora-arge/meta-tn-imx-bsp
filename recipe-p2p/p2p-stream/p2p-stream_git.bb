@@ -11,7 +11,7 @@ S = "${WORKDIR}/git"
 # Cmake is uses for compile but not install target device.
 inherit cmake pkgconfig systemd
 
-DEPENDS = "gstreamer1.0 gstreamer1.0-plugins-base gstreamer1.0-rtsp-server glib-2.0 pkgconfig-native"
+DEPENDS = "gstreamer1.0 gstreamer1.0-plugins-base gstreamer1.0-rtsp-server glib-2.0 pkgconfig-native wpa-supplicant"
 EXTRA_OECMAKE:append = " -DCMAKE_INSTALL_PREFIX:PATH=${prefix}"
 
 SYSTEMD_AUTO_ENABLE = "disable"

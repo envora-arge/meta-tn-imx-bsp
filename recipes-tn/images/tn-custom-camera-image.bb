@@ -29,6 +29,7 @@ IMAGE_INSTALL += " \
 IMAGE_INSTALL += " \
     linux-firmware-pcie8997 \
     wpa-supplicant \
+    wpa-supplicant-lib \
     hostapd \
     iw \
     iproute2 \
