@@ -29,6 +29,15 @@ We integrated our custom developed P2P networking and streaming applications int
 - **`p2p-wifi-direct_git.bb`**: Pulls and manages the Wi-Fi Direct connection processes, power management, and watchdog bash services.
 - **`p2p-stream_git.bb`**: Pulls and compiles the CMake-based GStreamer video streaming application, designed to communicate over the established P2P link.
 
+### 6. SD Card 1.8V Signalling Fix (usdhc2 Dual-Mode)
+Our board does not support UHS / 1.8V signalling (voltage switching, "dual-mode") on the SD card slot wired to `usdhc2`. Without a workaround the controller attempts to negotiate 1.8V high-speed modes, which the hardware cannot honour, leading to unstable or failing SD card access.
+To resolve this, we add the `no-1-8-v;` property to the `usdhc2` node so the card stays in 3.3V high-speed mode. The change is applied in the same kernel recipe used for CMA (`recipes-kernel/linux/linux-imx_%.bbappend`), by extending the existing `do_patch:append()` task that already edits the Device Tree (`imx8mp.dtsi`) via `sed` before compilation:
+- The first added `sed` removes any pre-existing `no-1-8-v;` inside the `usdhc2` node, making the task idempotent across rebuilds.
+- The second added `sed` inserts `no-1-8-v;` after the node's `status` line.
+- The property is added to the base SoC `imx8mp.dtsi` node, so it is inherited by the deployed board overlay (`imx8mp-evk-tevs.dtb`) and therefore applies to **both** `tn-custom-camera-image` and `tn-custom-camera-image-dev` automatically — no image-level changes are required.
+
+*Note: For the `imx8mp-lpddr4-evk` camera build the active kernel recipe is `linux-imx` (the `:tn-camera` override redirects its source to the TechNexion `linux-tn-imx` tree via `LINUX_IMX_SRC:tn-camera`), which is why both the CMA fix and this SD fix live in `linux-imx_%.bbappend`.*
+
 ---
 
 ## Building the Images
