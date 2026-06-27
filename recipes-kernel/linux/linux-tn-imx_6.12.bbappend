@@ -4,6 +4,15 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/file:"
 SRC_URI += "file://0001-restore-nxp-cma-960m.patch"
 # ---------------------------------------------------------
 
+# SD card (usdhc2): board does not support UHS 1.8V signalling (dual-mode),
+# force no-1-8-v so the card stays in 3.3V high-speed mode.
+do_patch:append() {
+    sed -i '/usdhc2: mmc@30b50000 {/,/};/{/no-1-8-v;/d}' \
+        ${S}/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+    sed -i '/usdhc2: mmc@30b50000 {/,/};/s/\(status = "disabled";\)/\1\n\t\t\t\tno-1-8-v;/' \
+        ${S}/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+}
+
 SRC_URI:append:rescue = " \
        file://logo.ppm \
        file://rescue-fragment.cfg \
