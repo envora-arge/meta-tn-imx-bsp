@@ -8,37 +8,42 @@ SRCREV = "${AUTOREV}"
 
 S = "${WORKDIR}/git"
 
-# Cmake is uses for compile but not install target device.
+# Only boards with the TEVS camera + Wi-Fi Direct hardware carry this feature.
+COMPATIBLE_MACHINE = "(tep-imx8mp|tek-imx8mp|axon-imx8mp|edm-g-imx8mp)"
+
 inherit cmake pkgconfig systemd
 
 DEPENDS = "gstreamer1.0 gstreamer1.0-plugins-base gstreamer1.0-rtsp-server glib-2.0 pkgconfig-native wpa-supplicant"
-EXTRA_OECMAKE:append = " -DCMAKE_INSTALL_PREFIX:PATH=${prefix}"
 
-SYSTEMD_AUTO_ENABLE = "disable"
+RDEPENDS:${PN} += "wpa-supplicant iw iproute2 bash"
 
-SYSTEMD_SERVICE:${PN} = "p2p-stream.service"
+SYSTEMD_SERVICE:${PN} = "p2p-stream.service p2p-wifi-init.service p2p-wifi-power.service"
+SYSTEMD_AUTO_ENABLE = "enable"
 
 do_install:append() {
-    # Some upstream CMake installs to /usr/local; move binary into ${bindir} for Yocto packaging.
-    if [ -f ${D}/usr/local/bin/p2p-stream ]; then
-        install -d ${D}${bindir}
-        mv ${D}/usr/local/bin/p2p-stream ${D}${bindir}/p2p-stream
-    fi
-    # Remove empty /usr/local leftovers so QA does not flag unshipped directories.
-    if [ -d ${D}/usr/local ]; then
-        rm -rf ${D}/usr/local
-    fi
-
-    install -d ${D}${sysconfdir}/default
-    install -m 0644 ${S}/config/video-node.env ${D}${sysconfdir}/default/video-node
-
-    
-    install -d ${D}${sysconfdir}/udev/rules.d
-    install -m 0644 ${UNPACKDIR}/99-camera.rules ${D}${sysconfdir}/udev/rules.d/
+    # Runtime config — split by purpose:
+    #   stream.conf           non-secret app/stream parameters (0644)
+    #   wifi-credentials.conf WPA-PSK identity, restricted (0600)
+    install -d ${D}${sysconfdir}/p2p-stream
+    install -m 0644 ${S}/config/stream.conf ${D}${sysconfdir}/p2p-stream/stream.conf
+    install -m 0600 ${S}/config/wifi-credentials.conf ${D}${sysconfdir}/p2p-stream/wifi-credentials.conf
 
     install -d ${D}${sysconfdir}/p2p-stream/device-profiles
     install -m 0644 ${S}/device-profiles/*.ini ${D}${sysconfdir}/p2p-stream/device-profiles/
+
+    install -d ${D}${sysconfdir}/udev/rules.d
+    install -m 0644 ${UNPACKDIR}/99-camera.rules ${D}${sysconfdir}/udev/rules.d/
+
+    install -d ${D}${systemd_system_unitdir}
+    install -m 0644 ${S}/systemd/p2p-stream.service ${D}${systemd_system_unitdir}/
+    install -m 0644 ${S}/systemd/p2p-wifi-init.service ${D}${systemd_system_unitdir}/
+    install -m 0644 ${S}/systemd/p2p-wifi-power.service ${D}${systemd_system_unitdir}/
+
+    install -d ${D}${libexecdir}/p2p-stream
+    install -m 0755 ${S}/wifi/p2p-wifi-init.sh ${D}${libexecdir}/p2p-stream/
+    install -m 0755 ${S}/wifi/p2p-wifi-power.sh ${D}${libexecdir}/p2p-stream/
 }
 
-FILES:${PN} += "${sysconfdir}/p2p-stream/device-profiles/* \
-                ${sysconfdir}/udev/rules.d/99-camera.rules"
+FILES:${PN} += "${sysconfdir}/p2p-stream \
+                ${sysconfdir}/udev/rules.d/99-camera.rules \
+                ${libexecdir}/p2p-stream"
