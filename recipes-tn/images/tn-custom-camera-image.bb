@@ -26,6 +26,8 @@ IMAGE_INSTALL += " \
 "
 
 # Wi-Fi (NXP 8997 PCIe), Hotspot and Network
+# p2p-stream now packages the P2P Wi-Fi Direct services (p2p-wifi-init,
+# p2p-wifi-power) itself — the separate p2p-wifi-direct recipe was removed.
 IMAGE_INSTALL += " \
     linux-firmware-pcie8997 \
     wpa-supplicant \
@@ -34,7 +36,6 @@ IMAGE_INSTALL += " \
     iw \
     iproute2 \
     p2p-stream \
-    p2p-wifi-direct \
 "
 
 # Camera Kernel Modules and TechNexion Drivers
