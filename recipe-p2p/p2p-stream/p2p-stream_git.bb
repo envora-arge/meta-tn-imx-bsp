@@ -9,7 +9,9 @@ SRCREV = "${AUTOREV}"
 S = "${WORKDIR}/git"
 
 # Only boards with the TEVS camera + Wi-Fi Direct hardware carry this feature.
-COMPATIBLE_MACHINE = "(tep-imx8mp|tek-imx8mp|axon-imx8mp|edm-g-imx8mp)"
+# imx8mp-lpddr4-evk matches tn-camera-bootscr's own COMPATIBLE_MACHINE scoping
+# (recipes-bsp/tn-camera-bootscr) — same EVK-based camera target.
+COMPATIBLE_MACHINE = "(imx8mp-lpddr4-evk)"
 
 inherit cmake pkgconfig systemd
 
